@@ -10,7 +10,21 @@
 </head>
 <body>
     <div class="container">
-        <h1>Color Palatte Generator</h1>
+        <h1>Color Palette Generator</h1>
+        
+        <!-- Mode Selector -->
+        <div class="mode-selector">
+            <label>Color Harmony:</label>
+            <div class="mode-buttons">
+                <button class="mode-btn active" data-mode="random">Random</button>
+                <button class="mode-btn" data-mode="complementary">Complementary</button>
+                <button class="mode-btn" data-mode="analogous">Analogous</button>
+                <button class="mode-btn" data-mode="triadic">Triadic</button>
+                <button class="mode-btn" data-mode="warm">Warm</button>
+                <button class="mode-btn" data-mode="cool">Cool</button>
+            </div>
+        </div>
+
         <button id="generate-btn">
             <i class="fas fa-sync-alt"></i>
             Generate Palette
@@ -66,11 +80,12 @@
         <!-- Favorites Section -->
             <div class="fav-section">
                 <h2>Saved Favorites</h2>
-                <div id="favorites-list" class="palette-container">
-            /div>
+                <div id="favorites-list" class="palette-container"></div> 
+            </div>
         </div>
     </div>
 
     <script src="script.js"></script>
+    <div id="copy-toast">Color copied to clipboard!</div>
 </body>
 </html>
