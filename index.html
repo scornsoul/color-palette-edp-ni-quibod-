@@ -3,89 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Color Palette Generator</title>
-    <!-- The link below is from cdnjs, search font-awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title>Clean Architecture Palette</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
     <div class="container">
-        <h1>Color Palette Generator</h1>
+        <h1>Smart Color Generator</h1>
         
-        <!-- Mode Selector -->
-        <div class="mode-selector">
-            <label>Color Harmony:</label>
-            <div class="mode-buttons">
-                <button class="mode-btn active" data-mode="random">Random</button>
-                <button class="mode-btn" data-mode="complementary">Complementary</button>
-                <button class="mode-btn" data-mode="analogous">Analogous</button>
-                <button class="mode-btn" data-mode="triadic">Triadic</button>
-                <button class="mode-btn" data-mode="warm">Warm</button>
-                <button class="mode-btn" data-mode="cool">Cool</button>
-            </div>
+        <div class="controls">
+            <button id="generate-btn">
+                <i class="fas fa-sync-alt"></i> Generate Smart Palette
+            </button>
         </div>
 
-        <button id="generate-btn">
-            <i class="fas fa-sync-alt"></i>
-            Generate Palette
-        </button>
+        <div id="main-palette" class="palette-container"></div>
 
-        <div class="palette-container">
-            <!-- COLOR BOX 1 -->
-              <div class="color-box">
-                <div class="color" style="background-color: #F63049;"></div>
-                <div class="color-info">
-                    <span class="hex-value">#F63049</span>
-                    <i class="far fa-copy copy-btn" title="Copy to Clipboard"></i>
-                    <i class="far fa-heart save-btn" title="Add to Favorites"></i>
-                </div>
-              </div>
-             <!-- COLOR BOX 2 -->
-              <div class="color-box">
-                <div class="color" style="background-color: #D02752;"></div>
-                <div class="color-info">
-                    <span class="hex-value">#D02752</span>
-                    <i class="far fa-copy copy-btn" title="Copy to Clipboard"></i>
-                    <i class="far fa-heart save-btn" title="Add to Favorites"></i>
-                </div>
-              </div>
-             <!-- COLOR BOX 3 -->
-              <div class="color-box">
-                <div class="color" style="background-color: #8A244B;"></div>
-                <div class="color-info">
-                    <span class="hex-value">#8A244B</span>
-                    <i class="far fa-copy copy-btn" title="Copy to Clipboard"></i>
-                    <i class="far fa-heart save-btn" title="Add to Favorites"></i>
-                </div>
-              </div>
-             <!-- COLOR BOX 4 -->
-              <div class="color-box">
-                <div class="color" style="background-color: #111F35;"></div>
-                <div class="color-info">
-                    <span class="hex-value">#111F35</span>
-                    <i class="far fa-copy copy-btn" title="Copy to Clipboard"></i>
-                    <i class="far fa-heart save-btn" title="Add to Favorites"></i>
-                </div>
-              </div>
-             <!-- COLOR BOX 5 -->
-              <div class="color-box">
-                <div class="color" style="background-color: #000;"></div>
-                <div class="color-info">
-                    <span class="hex-value">#000000</span>
-                    <i class="far fa-copy copy-btn" title="Copy to Clipboard"></i>
-                    <i class="far fa-heart save-btn" title="Add to Favorites"></i>
-                </div>
-              </div>
-        </div>
-        <!-- Favorites Section -->
-            <div class="fav-section">
-                <h2>Saved Favorites</h2>
-                <div id="favorites-list" class="palette-container"></div> 
-            </div>
+        <div class="saved-section">
+            <h2><i class="fas fa-heart"></i> Saved Colors</h2>
+            <div id="saved-colors-list" class="palette-container"></div>
         </div>
     </div>
 
+    <template id="color-box-template">
+        <div class="color-box">
+            <div class="color" title="Click to copy"></div>
+            <div class="color-info">
+                <span class="hex-value"></span>
+                <div class="actions">
+                    <i class="far fa-copy action-btn copy-btn" title="Copy"></i>
+                    <i class="fa-heart action-btn save-btn"></i>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <div id="toast">Hex code copied!</div>
     <script src="script.js"></script>
-    <div id="copy-toast">Color copied to clipboard!</div>
 </body>
 </html>
