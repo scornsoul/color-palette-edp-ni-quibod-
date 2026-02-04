@@ -1,68 +1,321 @@
-@import url(https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700);
+/* ==========================================================================
+   1. GLOBAL STYLES & RESET
+   Ensures the app looks the same on all browsers.
+   ========================================================================== */
 
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: "Poppins", sans-serif; }
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
 
-body {
-    background: linear-gradient(135deg, #F63049, #111F35);
-    min-height: 100vh;
-    display: flex; justify-content: center; padding: 40px 20px;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; /* Padding won't increase the size of boxes */
+    font-family: "Poppins", sans-serif;
 }
 
-@property --angle { syntax: "<angle>"; initial-value: 0deg; inherits: false; }
+body {
+    background: linear-gradient(135deg, #000000, #ffffff);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Allows scrolling if the list gets long */
+    padding: 40px 20px;
+}
+
+/* ==========================================================================
+   2. THE ANIMATED "GLOW" CONTAINER
+   Handles the rotating rainbow border effect.
+   ========================================================================== */
+
+/* Defines a custom variable for the rotation angle */
+@property --angle {
+    syntax: "<angle>";
+    initial-value: 0deg;
+    inherits: false;
+}
 
 .container {
-    background-color: #fff; border-radius: 1rem; padding: 2.5rem;
-    width: 100%; max-width: 850px; position: relative;
+    background: white;
+    border-radius: 1rem;
+    padding: 2rem;
+    width: 100%;
+    max-width: 800px;
+    position: relative; /* Allows pseudo-elements to sit behind it */
     box-shadow: 0 10px 25px rgba(0,0,0,0.1);
 }
 
-.container::after, .container::before {
-    content: ''; position: absolute; width: 100%; height: 100%;
-    background-image: conic-gradient(from var(--angle), red, orange, yellow, green, blue, purple, red);
-    top: 50%; left: 50%; translate: -50% -50%; z-index: -1;
-    padding: 5px; border-radius: inherit; animation: 3s spin linear infinite;
+/* The rainbow border/glow effect */
+.container::before {
+    content: '';
+    position: absolute;
+    z-index: -1;      /* Places it behind the white box */
+    inset: -5px;      /* Makes it slightly larger than the container */
+    background: conic-gradient(from var(--angle), red, orange, yellow, green, blue, purple, red);
+    border-radius: inherit;
+    animation: spin 3s linear infinite;
+    filter: blur(15px); /* Creates the "glow" look */
 }
 
-.container::before { filter: blur(1.5rem); }
-@keyframes spin { from { --angle: 0deg; } to { --angle: 360deg; } }
+@keyframes spin {
+    to { --angle: 360deg; }
+}
 
-h1 { text-align: center; margin-bottom: 2rem; color: #333; }
-.controls { display: flex; justify-content: center; margin-bottom: 2.5rem; }
+/* ==========================================================================
+   3. UI COMPONENTS (Buttons & Headers)
+   Styling for the titles, mode buttons, and generate button.
+   ========================================================================== */
+
+h1 { 
+    text-align: center; 
+    margin-bottom: 1.5rem; 
+    color: #333; 
+}
+
+.mode-selector { 
+    text-align: center; 
+    margin-bottom: 1.5rem; 
+}
+
+.mode-buttons { 
+    display: flex; 
+    gap: 8px; 
+    flex-wrap: wrap; 
+    justify-content: center; 
+    margin-top: 10px; 
+}
+
+.mode-btn {
+    padding: 8px 16px; 
+    border-radius: 20px; 
+    border: 2px solid #ddd;
+    background: #f0f0f0; 
+    cursor: pointer; 
+    transition: 0.3s ease;
+}
+
+/* Styling for the currently selected harmony mode */
+.mode-btn.active { 
+    background: #F63049; 
+    color: white; 
+    border-color: #F63049; 
+}
+
+.button-group {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-bottom: 2rem;
+}
 
 #generate-btn {
-    padding: 0.8rem 2rem; border-radius: 50px; cursor: pointer;
-    font-weight: 600; border: none; background: #111F35; color: white;
+    padding: 12px 24px;
+    background: #351125; 
+    color: white; 
+    border: none; 
+    border-radius: 50px;
+    cursor: pointer; 
+    font-weight: 600;
+    transition: transform 0.2s;
+}
+
+#generate-btn:active { transform: scale(0.95); }
+
+#save-palette-btn {
+    padding: 12px 24px;
+    background: #F63049; 
+    color: white; 
+    border: none; 
+    border-radius: 50px;
+    cursor: pointer; 
+    font-weight: 600;
+    transition: transform 0.2s;
+}
+
+#save-palette-btn:active { transform: scale(0.95); }
+
+/* ==========================================================================
+   4. MAIN PALETTE GRID (The big boxes)
+   Uses CSS Grid to automatically fit 5 columns.
+   ========================================================================== */
+
+.palette-container {
+    display: grid;
+    /* "auto-fit" automatically wraps columns when space is tight */
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 1rem;
+}
+
+.color-box {
+    border-radius: 10px; 
+    overflow: hidden; 
+    background: white;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
+    transition: 0.2s;
+}
+
+.color-box:hover { transform: translateY(-3px); }
+
+.color { 
+    height: 120px; 
+    cursor: pointer; 
+}
+
+.color-info { 
+    padding: 10px; 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+}
+
+.hex-value { 
+    font-weight: 600; 
+    font-size: 0.9rem; 
+}
+
+/* ==========================================================================
+   5. FAVORITES SECTION (The small boxes)
+   Uses Flexbox for a "collection" look with fixed pixel sizes.
+   ========================================================================== */
+
+.fav-section { 
+    margin-top: 30px; 
+    border-top: 2px solid #eee; 
+    padding-top: 20px; 
+}
+
+.fav-section h2 { 
+    font-size: 1.1rem; 
+    margin-bottom: 15px; 
+    text-align: center; 
+}
+
+#favorites-list {
+    display: flex;      /* Aligns items in a row */
+    flex-wrap: wrap;    /* Wraps them to new lines if needed */
+    gap: 10px;
+    justify-content: center;
+}
+
+/* Fixed dimensions for saved colors */
+#favorites-list .color-box {
+    width: 105px;       /* Fixed Width */
+    flex: 0 0 105px;    /* Prevents boxes from stretching or shrinking */
+}
+
+#favorites-list .color { 
+    height: 60px; 
+}
+
+#favorites-list .color-info { 
+    font-size: 0.75rem; 
+    padding: 5px; 
+}
+
+/* The Notification Bar */
+#copy-toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px); /* Hidden below screen */
+    background: #111F35;
+    color: white;
+    padding: 12px 25px;
+    border-radius: 50px;
+    font-weight: 500;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: 1000;
+}
+
+/* Slide it up into view */
+#copy-toast.show {
+    transform: translateX(-50%) translateY(0);
+}
+
+/* ==========================================================================
+   7. SAVED PALETTES SECTION
+   Each saved palette shows as a group of 5 colors with a delete button.
+   ========================================================================== */
+
+#saved-palettes-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.saved-palette-item {
+    background: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: relative;
+}
+
+.saved-palette-item .palette-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.saved-palette-item .palette-name {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+}
+
+.saved-palette-item .palette-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.saved-palette-item .palette-colors {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 1rem;
+}
+
+.rename-palette-btn {
+    background: #351125;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.85rem;
     transition: all 0.2s;
 }
 
-#generate-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
-
-.palette-container {
-    display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+.rename-palette-btn:hover {
+    background: #4a1733;
+    transform: translateY(-1px);
 }
 
-.color-box { 
-    border-radius: 12px; overflow: hidden; background: white; 
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1); transition: 0.2s;
+.rename-palette-btn:active {
+    transform: translateY(0);
 }
 
-.color-box:hover { transform: translateY(-5px); }
-.color { height: 130px; cursor: pointer; }
-.color-info { padding: 0.8rem; display: flex; align-items: center; justify-content: space-between; }
-.hex-value { font-weight: 600; font-size: 0.85rem; color: #444; }
-
-.actions { display: flex; gap: 10px; }
-.action-btn { cursor: pointer; transition: 0.2s; font-size: 0.9rem; color: #ccc; }
-.copy-btn:hover { color: #111F35; }
-.save-btn.active, .fa-trash-alt { color: #F63049; }
-
-/* Saved Section */
-.saved-section { margin-top: 3rem; border-top: 2px solid #f0f0f0; padding-top: 2rem; }
-.saved-section h2 { font-size: 1.2rem; margin-bottom: 1.5rem; color: #333; }
-
-#toast {
-    position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(100px);
-    background: #333; color: white; padding: 12px 24px; border-radius: 50px;
-    transition: transform 0.4s; z-index: 1000;
+.delete-palette-btn {
+    background: #F63049;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.85rem;
+    transition: all 0.2s;
 }
-#toast.show { transform: translateX(-50%) translateY(0); }
+
+.delete-palette-btn:hover {
+    background: #D02752;
+    transform: translateY(-1px);
+}
+
+.delete-palette-btn:active {
+    transform: translateY(0);
+}
